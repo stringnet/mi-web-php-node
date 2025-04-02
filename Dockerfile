@@ -27,6 +27,6 @@ RUN if [ -f package.json ]; then npm install; fi
 RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 80
-CMD ["apache2-foreground"]
+CMD ["php", "-S", "0.0.0.0:80", "-t", "public"]
 
 
