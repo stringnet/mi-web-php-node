@@ -1,1 +1,12 @@
-{}
+{
+  "name": "mi-web-php-node",
+  "version": "1.0.0",
+  "description": "App PHP con Apache y Node.js",
+  "main": "scripts/ejemplo.js",
+  "scripts": {
+    "start": "node scripts/ejemplo.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
+
