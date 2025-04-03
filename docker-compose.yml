@@ -30,7 +30,7 @@ services:
       - ./app:/app
     command: npm start
     ports:
-      - "3000:3000"
+      - "8082:3000"
     networks:
       - mi_web_network
     depends_on:
