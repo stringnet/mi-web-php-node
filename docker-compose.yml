@@ -1,45 +1,81 @@
 services:
-  web:
-    build: .
-    ports:
-      - "8889:80"
-    volumes:
-      - .:/var/www/html
-    depends_on:
-      - db
-    networks:
-      - red-interna
-
-  db:
+  mysql:
     image: mysql:5.7
-    restart: always
     environment:
-      MYSQL_DATABASE: appdb
-      MYSQL_USER: usuario
-      MYSQL_PASSWORD: clave123
-      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mi_web_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: stringnet$2025
     volumes:
-      - db_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     networks:
-      - red-interna
+      - mi_web_network
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    restart: always
-    ports:
-      - "8082:80"
     environment:
-      PMA_HOST: db
-      PMA_PORT: 3306
-      PMA_USER: usuario
-      PMA_PASSWORD: clave123
-    depends_on:
-      - db
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: stringnet$2025
+    ports:
+      - "8081:80"
     networks:
-      - red-interna
+      - mi_web_network
+    depends_on:
+      - mysql
 
-volumes:
-  db_data:
+  nodejs:
+    image: node:14
+    working_dir: /app
+    volumes:
+      - ./app:/app
+    command: npm start
+    ports:
+      - "3000:3000"
+    networks:
+      - mi_web_network
+    depends_on:
+      - mysql
+
+  phpmailer:
+    image: richardlm/phpmailer
+    environment:
+      MAIL_HOST: smtp.mailtrap.io
+      MAIL_USERNAME: <your_mailtrap_username>
+      MAIL_PASSWORD: <your_mailtrap_password>
+    networks:
+      - mi_web_network
+
+  web:
+    build:
+      context: ./web
+    volumes:
+      - ./web:/var/www/html
+    ports:
+      - "80:80"  # Puerto de acceso web
+    networks:
+      - mi_web_network
+
+  ftp:
+    image: fauria/vsftpd
+    environment:
+      FTP_USER: "ftpuser"
+      FTP_PASS: "ftppassword"
+      FTP_UID: 1000
+      FTP_GID: 1000
+      PASV_ADDRESS: "<tu_dominio_o_ip>"
+      PASV_MIN_PORT: 30000
+      PASV_MAX_PORT: 30010
+    ports:
+      - "21:21"  # Puerto FTP
+      - "30000-30010:30000-30010"  # Rango de puertos para pasivo FTP
+    volumes:
+      - ./web:/var/ftp
+    networks:
+      - mi_web_network
 
 networks:
-  red-interna:
+  mi_web_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
