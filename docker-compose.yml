@@ -3,7 +3,6 @@ version: '3.8'
 services:
   web:
     build: .
-    container_name: mi-web-app
     ports:
       - "8888:80"
     volumes:
@@ -15,7 +14,6 @@ services:
 
   db:
     image: mysql:5.7
-    container_name: mysql-db
     restart: always
     environment:
       MYSQL_DATABASE: appdb
@@ -29,7 +27,6 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
     restart: always
     ports:
       - "8081:80"
