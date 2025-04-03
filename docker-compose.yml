@@ -2,7 +2,7 @@ services:
   web:
     build: .
     ports:
-      - "8888:80"
+      - "8889:80"
     volumes:
       - .:/var/www/html
     depends_on:
@@ -27,7 +27,7 @@ services:
     image: phpmyadmin/phpmyadmin
     restart: always
     ports:
-      - "8081:80"
+      - "8082:80"
     environment:
       PMA_HOST: db
       PMA_PORT: 3306
